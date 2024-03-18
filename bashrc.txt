@@ -1,0 +1,45 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# User specific environment
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
+then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+fi
+export PATH
+
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+
+# User specific aliases and functions
+if [ -d ~/.bashrc.d ]; then
+	for rc in ~/.bashrc.d/*; do
+		if [ -f "$rc" ]; then
+			. "$rc"
+		fi
+	done
+fi
+
+unset rc
+
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-17.0.9.0.9-3.fc38.x86_64/
+
+# Prompt String PS1 modified
+
+export PS1="\033[92m[\033[0m\033[1;94m\u\033[0m@\h \W\033[92m]\033[0m\n$ "
+
+function c(){
+	gcc -o ./${1%.c}.out ./$1
+	./${1%.c}.out
+}
+function teleport(){
+	cd "$(find /home/dandy/ -type d -iname "$1" -not \( -ipath "*git*" -or -ipath ".*" -or -ipath "*Idea*" -or -ipath "*bin*" -or -ipath "*(jdk|openjfx)*" \))"
+
+}
+
+alias cle='clear'
+alias ls='ls -l'
