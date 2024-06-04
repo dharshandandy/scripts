@@ -1,0 +1,35 @@
+#!/bin/bash
+
+function MovetoTrash(){
+	local file="$1"
+	local trash_info_path="$HOME/.local/share/Trash/info/$file.trashinfo"
+	local trash_files_path="$HOME/.local/share/Trash/files/$file"
+
+	mkdir -p "$(dirname "$trash_info_path")" "$(dirname "$trash_files_path")" # Create the wanted Folders
+	touch "$trash_info_path" # Create the trashinfo File for Restore purpose
+	echo -e "[Trash Info]\nPath=$(pwd)/$file\nDeletionDate=$(date +%FT%T)" >> "$trash_info_path" # Write the Restore informations
+	mv "$(pwd)/$file" "$trash_files_path" # Finally move the target file or folder to User Local Trash for security Purpose !!.
+}
+
+read -p "Are you sure want delete specified files or folder [Y|N] : " confirmation # Get the Confirmation From User Before starting Process.
+
+if [[ ! "$confirmation" =~ ^[Yy] ]]; then
+	echo "Abort this Process.."
+	exit 1
+fi
+for target in "$@"; do
+	if [[ ! $target =~ ^-[rfvid]+$ ]]; then
+		if [[ -a $(pwd)/$target ]]; then
+			if [[ -d "$target" ]]; then
+				echo "Deleting Folder $target"
+			else
+				echo "Deleting File $target"
+			fi
+			 MovetoTrash ${target%/*}
+		else 
+			echo "$target File or Folder not Exists"
+		fi
+	else
+		echo "If you want to remove the file or folder that name is start with '-' eg. -foo.bar please use the /bin/rm cmd."
+	fi
+done
