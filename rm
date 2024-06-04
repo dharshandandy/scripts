@@ -29,7 +29,5 @@ for target in "$@"; do
 		else 
 			echo "$target File or Folder not Exists"
 		fi
-	else
-		echo "If you want to remove the file or folder that name is start with '-' eg. -foo.bar please use the /bin/rm cmd."
 	fi
 done
